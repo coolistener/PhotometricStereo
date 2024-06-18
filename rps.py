@@ -96,7 +96,7 @@ class PS(object):
             raise ValueError("Light L is None")
         if self.M.shape[1] != self.L.shape[1]:
             raise ValueError("Inconsistent dimensionality between M and L")
-
+        
         #############################################
 
         # Please write your code here to solve the surface normal N whose size is (p, 3) as discussed in the tutorial
@@ -104,16 +104,23 @@ class PS(object):
         # Step 1: solve Ax = b
         # Hint: You can use np.linalg.lstsq(A, b) to solve Ax = b
 
-        # self.N = ???
+        # size of M: (p, f)
+        # size of L: (3, f)
+        # size of N: (p, 3)
+        
+        self.N = np.zeros((self.M.shape[0], 3))
+        for i in range(self.M.shape[0]):
+            I = self.M[i, :]
+            self.N[i, :] = np.linalg.lstsq(self.L.T, I.T, rcond=None)[0]
 
         # Step 2: We need to normalize the normal vectors as the norm of the normal vectors should be 1
         # Hint: You can use function normalize from sklearn.preprocessing
 
-        # self.N = ???
-
+        self.N = normalize(self.N, axis=1)
 
         #############################################
 
+        
         if self.background_ind is not None:
             for i in range(self.N.shape[1]):
                 self.N[self.background_ind, i] = 0
